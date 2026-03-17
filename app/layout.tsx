@@ -13,10 +13,44 @@ const cinzel = Cinzel({
   variable: "--font-brand",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://hotengroup.com";
+
 export const metadata: Metadata = {
-  title: "Hoten Group LLC | Home Inspections, Real Estate, Renovations",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Hoten Group | Home Inspections, Real Estate, Renovations",
+    template: "%s | Hoten Group",
+  },
   description:
-    "Hoten Group LLC provides home inspections, direct home buying, fix-and-flip services, investment property solutions, home building, and renovations.",
+    "Hoten Group provides home inspections, real estate support, renovations, and property solutions for homeowners, buyers, sellers, and investors in the Atlanta area.",
+  keywords: [
+    "Hoten Group",
+    "home inspections",
+    "home inspector Atlanta",
+    "Atlanta home inspections",
+    "property inspections",
+    "real estate support",
+    "renovations",
+    "investment property services",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Hoten Group | Home Inspections, Real Estate, Renovations",
+    description:
+      "Professional home inspections, real estate support, renovations, and property solutions in the Atlanta area.",
+    url: siteUrl,
+    siteName: "Hoten Group",
+    type: "website",
+    
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hoten Group | Home Inspections, Real Estate, Renovations",
+    description:
+      "Professional home inspections, real estate support, renovations, and property solutions in the Atlanta area.",
+  },
 };
 
 export default function RootLayout({

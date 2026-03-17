@@ -10,17 +10,17 @@ export function HeroSection() {
       <div className="relative mx-auto grid min-h-[88vh] max-w-7xl items-center gap-14 px-6 py-20 lg:grid-cols-2 lg:px-8">
         <div className="max-w-3xl">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.28em] text-amber-400">
-            Premium Real Estate • Home Inspections • Renovations
+            Home Inspections • Real Estate Support • New Construction • Renovations
           </p>
 
           <h1 className="text-5xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Luxury-level presentation for modern property solutions.
+            Home inspections, property solutions, and renovations in Atlanta and Georgia.
           </h1>
 
           <p className="mt-8 max-w-2xl text-lg leading-8 text-stone-300">
-            Hoten Group LLC helps buyers, sellers, homeowners, and investors
-            move with confidence through inspections, direct property purchases,
-            renovations, and residential project support.
+            Hoten Group helps homeowners, buyers, sellers, and investors in the
+            Atlanta area with professional home inspections, property guidance,
+            renovations, and real estate support.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
