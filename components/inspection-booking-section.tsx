@@ -1,19 +1,86 @@
+"use client";
+
+import { FormEvent, useState } from "react";
 import { availability, inspectionPricing, stripeConfig } from "@/data/site-content";
+import { createBooking } from "@/lib/api/bookings";
 import { SectionHeading } from "./section-heading";
 
+type BookingFormState = {
+  name: string;
+  email: string;
+  phone: string;
+  propertyAddress: string;
+  preferredDate: string;
+  preferredTime: string;
+  message: string;
+};
+
+const initialState: BookingFormState = {
+  name: "",
+  email: "",
+  phone: "",
+  propertyAddress: "",
+  preferredDate: "",
+  preferredTime: "",
+  message: "",
+};
+
 export function InspectionBookingSection() {
+  const [form, setForm] = useState<BookingFormState>(initialState);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+  function updateField(name: keyof BookingFormState, value: string) {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+    setSuccess("");
+    setError("");
+
+    try {
+      await createBooking({
+        full_name: form.name,
+        email: form.email,
+        phone: form.phone || undefined,
+        property_address: form.propertyAddress,
+        preferred_date: form.preferredDate,
+        preferred_time: form.preferredTime,
+        service_type: "inspection",
+        message: form.message || undefined,
+    });
+
+      setSuccess("Your inspection request was submitted successfully.");
+      setForm(initialState);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong while submitting your booking."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section id="inspection" className="border-t border-white/10 px-6 py-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Home Inspection Booking"
           title="Schedule and pay for your inspection in one professional flow"
-          description="This MVP uses a frontend-first booking experience with a Stripe-ready payment step. Secure backend validation and Checkout session creation can be connected later."
+          description="This MVP uses a frontend-first booking experience with a Stripe-ready payment step."
         />
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8">
-            <form className="grid gap-5" aria-label="Home inspection booking form">
+            <form className="grid gap-5" aria-label="Home inspection booking form" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="inspection-name" className="mb-2 block text-sm font-medium text-stone-200">
                   Name
@@ -23,7 +90,10 @@ export function InspectionBookingSection() {
                   name="name"
                   type="text"
                   placeholder="Your full name"
+                  value={form.name}
+                  onChange={(e) => updateField("name", e.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500 focus:border-amber-400 focus:outline-none"
+                  required
                 />
               </div>
 
@@ -37,7 +107,10 @@ export function InspectionBookingSection() {
                     name="email"
                     type="email"
                     placeholder="you@example.com"
+                    value={form.email}
+                    onChange={(e) => updateField("email", e.target.value)}
                     className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500 focus:border-amber-400 focus:outline-none"
+                    required
                   />
                 </div>
 
@@ -50,6 +123,8 @@ export function InspectionBookingSection() {
                     name="phone"
                     type="tel"
                     placeholder="(555) 123-4567"
+                    value={form.phone}
+                    onChange={(e) => updateField("phone", e.target.value)}
                     className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500 focus:border-amber-400 focus:outline-none"
                   />
                 </div>
@@ -64,21 +139,44 @@ export function InspectionBookingSection() {
                   name="propertyAddress"
                   type="text"
                   placeholder="Property address"
+                  value={form.propertyAddress}
+                  onChange={(e) => updateField("propertyAddress", e.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500 focus:border-amber-400 focus:outline-none"
+                  required
                 />
               </div>
 
-              <div>
-                <label htmlFor="inspection-date" className="mb-2 block text-sm font-medium text-stone-200">
-                  Preferred Date
-                </label>
-                <input
-                  id="inspection-date"
-                  name="preferredDate"
-                  type="date"
-                  className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white focus:border-amber-400 focus:outline-none"
-                />
-              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                    <label htmlFor="inspection-date" className="mb-2 block text-sm font-medium text-stone-200">
+                    Preferred Date
+                    </label>
+                    <input
+                    id="inspection-date"
+                    name="preferredDate"
+                    type="date"
+                    value={form.preferredDate}
+                    onChange={(e) => updateField("preferredDate", e.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white focus:border-amber-400 focus:outline-none"
+                    required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="inspection-time" className="mb-2 block text-sm font-medium text-stone-200">
+                    Preferred Time
+                    </label>
+                    <input
+                    id="inspection-time"
+                    name="preferredTime"
+                    type="time"
+                    value={form.preferredTime}
+                    onChange={(e) => updateField("preferredTime", e.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white focus:border-amber-400 focus:outline-none"
+                    required
+                    />
+                </div>
+                </div>
 
               <div>
                 <label htmlFor="inspection-message" className="mb-2 block text-sm font-medium text-stone-200">
@@ -89,6 +187,8 @@ export function InspectionBookingSection() {
                   name="message"
                   rows={5}
                   placeholder="Tell us about the property or inspection needs"
+                  value={form.message}
+                  onChange={(e) => updateField("message", e.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-white placeholder:text-stone-500 focus:border-amber-400 focus:outline-none"
                 />
               </div>
@@ -101,6 +201,18 @@ export function InspectionBookingSection() {
                 <p className="mt-2 text-sm text-stone-300">{inspectionPricing.note}</p>
               </div>
 
+              {success ? (
+                <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+                  {success}
+                </div>
+              ) : null}
+
+              {error ? (
+                <div className="rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                  {error}
+                </div>
+              ) : null}
+
               <div className="flex flex-col gap-3 sm:flex-row">
                 <a
                   href={stripeConfig.paymentLink}
@@ -112,16 +224,13 @@ export function InspectionBookingSection() {
                 </a>
 
                 <button
-                  type="button"
-                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/5"
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Book Inspection
+                  {loading ? "Submitting..." : "Book Inspection"}
                 </button>
               </div>
-
-              <p className="text-xs leading-6 text-stone-400">
-                Frontend MVP note: the form is currently presentational. In production, connect this form to a secure backend API route for validation, scheduling logic, CRM/email notifications, and Stripe Checkout session creation.
-              </p>
             </form>
           </div>
 
