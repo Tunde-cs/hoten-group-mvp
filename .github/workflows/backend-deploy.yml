@@ -56,5 +56,6 @@ jobs:
             --require-approval never \
             --parameters FrontendUrl=https://hotengroup.com \
             --parameters FrontendProdWwwUrl=https://www.hotengroup.com \
+            --parameters FrontendPreviewUrl="${{ vars.FRONTEND_PREVIEW_URL }}" \
             --parameters DatabaseUrl="$PROD_DATABASE_URL" \
             --parameters SecretKey="$PROD_SECRET_KEY"
