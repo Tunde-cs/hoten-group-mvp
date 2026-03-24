@@ -1,0 +1,60 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "infra/**"
+      - ".github/workflows/backend-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+      PROD_SECRET_KEY: ${{ secrets.PROD_SECRET_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+
+      - name: Install infra dependencies
+        working-directory: infra
+        run: npm ci
+
+      - name: Build CDK app
+        working-directory: infra
+        run: npm run build
+
+      - name: CDK synth
+        working-directory: infra
+        run: npx cdk synth
+
+      - name: Deploy BackendStack
+        working-directory: infra
+        run: |
+          npx cdk deploy BackendStack \
+            --require-approval never \
+            --parameters FrontendUrl=https://hotengroup.com \
+            --parameters FrontendProdWwwUrl=https://www.hotengroup.com \
+            --parameters DatabaseUrl="$PROD_DATABASE_URL" \
+            --parameters SecretKey="$PROD_SECRET_KEY"
