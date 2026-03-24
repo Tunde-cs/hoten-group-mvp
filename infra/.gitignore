@@ -27,3 +27,10 @@ infra/cdk.out/
 
 # Keep Next generated type file
 !next-env.d.ts
+
+bin/*.js
+bin/*.d.ts
+lib/*.js
+lib/*.d.ts
+test/*.js
+test/*.d.ts

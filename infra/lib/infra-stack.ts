@@ -7,6 +7,7 @@ import * as apprunner from 'aws-cdk-lib/aws-apprunner';
 import * as ecrAssets from 'aws-cdk-lib/aws-ecr-assets';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import * as path from 'path';
+import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 
 export class BackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -20,6 +21,11 @@ export class BackendStack extends cdk.Stack {
     const frontendProdWwwUrl = new cdk.CfnParameter(this, 'FrontendProdWwwUrl', {
       type: 'String',
       default: 'https://www.hotengroup.com',
+    });
+
+    const frontendPreviewUrl = new cdk.CfnParameter(this, 'FrontendPreviewUrl', {
+      type: 'String',
+      default: '',
     });
 
     const databaseUrl = new cdk.CfnParameter(this, 'DatabaseUrl', {
@@ -135,6 +141,7 @@ export class BackendStack extends cdk.Stack {
               { name: 'FRONTEND_URL', value: frontendUrl.valueAsString },
               { name: 'FRONTEND_PROD_URL', value: frontendUrl.valueAsString },
               { name: 'FRONTEND_PROD_WWW_URL', value: frontendProdWwwUrl.valueAsString },
+              { name: 'FRONTEND_PREVIEW_URL', value: frontendPreviewUrl.valueAsString },
               { name: 'SECRET_KEY', value: secretKey.valueAsString },
               { name: 'ACCESS_TOKEN_EXPIRE_MINUTES', value: '60' },
               { name: 'DATABASE_URL', value: databaseUrl.valueAsString },
@@ -162,6 +169,95 @@ export class BackendStack extends cdk.Stack {
     service.node.addDependency(backendImage);
     service.node.addDependency(vpcConnector);
     service.node.addDependency(db);
+
+    const apiWebAcl = new wafv2.CfnWebACL(this, 'HotenGroupApiWebAcl', {
+      name: 'hotengroup-api-web-acl',
+      scope: 'REGIONAL',
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: 'hotengroup-api-web-acl',
+        sampledRequestsEnabled: true,
+      },
+      rules: [
+        {
+          name: 'AWS-AmazonIpReputationList',
+          priority: 0,
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesAmazonIpReputationList',
+            },
+          },
+          overrideAction: { none: {} },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'aws-amazon-ip-reputation',
+            sampledRequestsEnabled: true,
+          },
+        },
+        {
+          name: 'AWS-KnownBadInputs',
+          priority: 1,
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesKnownBadInputsRuleSet',
+            },
+          },
+          overrideAction: { none: {} },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'aws-known-bad-inputs',
+            sampledRequestsEnabled: true,
+          },
+        },
+        {
+          name: 'AWS-CommonRuleSet',
+          priority: 2,
+          statement: {
+            managedRuleGroupStatement: {
+              vendorName: 'AWS',
+              name: 'AWSManagedRulesCommonRuleSet',
+            },
+          },
+          overrideAction: { none: {} },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'aws-common-rule-set',
+            sampledRequestsEnabled: true,
+          },
+        },
+        {
+          name: 'ApiRateLimit',
+          priority: 3,
+          statement: {
+            rateBasedStatement: {
+              limit: 1000,
+              aggregateKeyType: 'IP',
+            },
+          },
+          action: { block: {} },
+          visibilityConfig: {
+            cloudWatchMetricsEnabled: true,
+            metricName: 'api-rate-limit',
+            sampledRequestsEnabled: true,
+          },
+        },
+      ],
+    });
+
+    const apiWebAclAssociation = new wafv2.CfnWebACLAssociation(this, 'HotenGroupApiWebAclAssociation', {
+      resourceArn: service.attrServiceArn,
+      webAclArn: apiWebAcl.attrArn,
+    });
+
+    apiWebAclAssociation.node.addDependency(service);
+    apiWebAclAssociation.node.addDependency(apiWebAcl);
+
+    new cdk.CfnOutput(this, 'ApiWebAclArn', {
+      value: apiWebAcl.attrArn,
+    });
 
     new cdk.CfnOutput(this, 'VpcId', {
       value: vpc.vpcId,

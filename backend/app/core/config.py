@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:3005"
     FRONTEND_PROD_URL: str = "https://hotengroup.com"
     FRONTEND_PROD_WWW_URL: str = "https://www.hotengroup.com"
+    FRONTEND_PREVIEW_URL: str = ""
 
     SECRET_KEY: str = "change-this-to-a-long-random-secret"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60

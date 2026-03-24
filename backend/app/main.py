@@ -22,8 +22,11 @@ allowed_origins = [
     settings.FRONTEND_URL,
     settings.FRONTEND_PROD_URL,
     settings.FRONTEND_PROD_WWW_URL,
+    settings.FRONTEND_PREVIEW_URL,
     "http://localhost:3005",
 ]
+
+allowed_origins = list(dict.fromkeys([origin for origin in allowed_origins if origin]))
 
 app.add_middleware(
     CORSMiddleware,
