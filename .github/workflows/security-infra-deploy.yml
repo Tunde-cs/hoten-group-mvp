@@ -1,0 +1,54 @@
+name: Security Infra Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/lib/security-stack.ts"
+      - "infra/bin/infra.ts"
+      - "infra/package.json"
+      - "infra/package-lock.json"
+      - ".github/workflows/security-infra-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-security-infra:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+
+      - name: Install infra dependencies
+        working-directory: infra
+        run: npm ci
+
+      - name: Build CDK app
+        working-directory: infra
+        run: npm run build
+
+      - name: CDK synth SecurityStack
+        working-directory: infra
+        run: npx cdk synth SecurityStack
+
+      - name: Deploy SecurityStack
+        working-directory: infra
+        run: npx cdk deploy SecurityStack --require-approval never
