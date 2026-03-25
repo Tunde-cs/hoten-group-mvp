@@ -10,6 +10,7 @@ import * as path from 'path';
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 
 export class BackendStack extends cdk.Stack {
+  public readonly apiWebAclArn: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -246,6 +247,7 @@ export class BackendStack extends cdk.Stack {
         },
       ],
     });
+    this.apiWebAclArn = apiWebAcl.attrArn;
 
     const apiWebAclAssociation = new wafv2.CfnWebACLAssociation(this, 'HotenGroupApiWebAclAssociation', {
       resourceArn: service.attrServiceArn,

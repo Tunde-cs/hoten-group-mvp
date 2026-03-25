@@ -9,6 +9,9 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as certificatemanager from 'aws-cdk-lib/aws-certificatemanager';
 
 export class FrontendStack extends cdk.Stack {
+  public readonly frontendWebAclArn: string;
+  public readonly frontendBucketName: string;
+  public readonly frontendDistributionId: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -21,6 +24,7 @@ export class FrontendStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
       autoDeleteObjects: false,
     });
+    this.frontendBucketName = siteBucket.bucketName;
 
     const staticRoutesFunction = new cloudfront.Function(this, 'HotenGroupStaticRoutesFunctionV2', {
       functionName: 'hotengroup-static-routes-v2',
@@ -138,6 +142,7 @@ export class FrontendStack extends cdk.Stack {
         },
       ],
     });
+    this.frontendWebAclArn = frontendWebAcl.attrArn;
 
     const siteCertificate = certificatemanager.Certificate.fromCertificateArn(
       this,
@@ -166,23 +171,14 @@ export class FrontendStack extends cdk.Stack {
         ],
       },
     });
+    this.frontendDistributionId = previewDistribution.distributionId;
 
     // Route 53 public hosted zone for hotengroup.com.
-    // For safety, the first DNS records point to the CURRENT live distribution,
-    // not the new preview distribution.
+    // DNS records now point to the new frontend distribution.
     const hostedZone = new route53.HostedZone(this, 'HotenGroupHostedZone', {
       zoneName: 'hotengroup.com',
       comment: 'Route 53 public hosted zone for Hoten Group',
     });
-
-    const currentLiveDistribution = cloudfront.Distribution.fromDistributionAttributes(
-      this,
-      'CurrentLiveFrontendDistribution',
-      {
-        distributionId: 'E3UZZ8AXNLGASQ',
-        domainName: 'divcb58kacq1m.cloudfront.net',
-      }
-    );
 
     new route53.ARecord(this, 'RootAliasA', {
       zone: hostedZone,
