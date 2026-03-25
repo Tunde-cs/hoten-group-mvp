@@ -1,14 +1,15 @@
-name: Backend Deploy
+name: Frontend Infra Deploy
 
 on:
   push:
     branches: [main]
     paths:
-      - "backend/**"
-      - "infra/lib/infra-stack.ts"
+      - "infra/lib/frontend-stack.ts"
+      - "infra/bin/infra.ts"
+      - "infra/cdk.json"
       - "infra/package.json"
       - "infra/package-lock.json"
-      - ".github/workflows/backend-deploy.yml"
+      - ".github/workflows/frontend-infra-deploy.yml"
   workflow_dispatch:
 
 permissions:
@@ -16,13 +17,11 @@ permissions:
   contents: read
 
 jobs:
-  deploy-backend:
+  deploy-frontend-infra:
     runs-on: ubuntu-latest
 
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
-      PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
-      PROD_SECRET_KEY: ${{ secrets.PROD_SECRET_KEY }}
 
     steps:
       - name: Checkout
@@ -47,17 +46,10 @@ jobs:
         working-directory: infra
         run: npm run build
 
-      - name: CDK synth
+      - name: CDK synth FrontendStack
         working-directory: infra
-        run: npx cdk synth BackendStack
+        run: npx cdk synth FrontendStack
 
-      - name: Deploy BackendStack
+      - name: Deploy FrontendStack
         working-directory: infra
-        run: |
-          npx cdk deploy BackendStack \
-            --require-approval never \
-            --parameters FrontendUrl=https://hotengroup.com \
-            --parameters FrontendProdWwwUrl=https://www.hotengroup.com \
-            --parameters FrontendPreviewUrl="${{ vars.FRONTEND_PREVIEW_URL }}" \
-            --parameters DatabaseUrl="$PROD_DATABASE_URL" \
-            --parameters SecretKey="$PROD_SECRET_KEY"
+        run: npx cdk deploy FrontendStack --require-approval never
