@@ -22,5 +22,5 @@ new SecurityStack(app, 'SecurityStack', {
   frontendWebAclArn: frontendStack.frontendWebAclArn,
   frontendBucketName: frontendStack.frontendBucketName,
   frontendDistributionId: frontendStack.frontendDistributionId,
-  // notificationEmail: 'your-email@example.com',
+  notificationEmail: 'tunde@hotengroup.com',
 });
