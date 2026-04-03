@@ -9,12 +9,12 @@ export function PortfolioSection() {
         <SectionHeading
           eyebrow="Projects"
           title="Selected project types and portfolio highlights"
-          description="A selection of renovation, investment, and completed home building projects that reflect our focus on quality, planning, and execution."
+          
         />
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {portfolioProjects.map((project) =>
-            project.category === "Home Building" && project.images ? (
+            project.images?.length ? (
                 <ProjectSliderCard
                 key={project.title}
                 category={project.category}

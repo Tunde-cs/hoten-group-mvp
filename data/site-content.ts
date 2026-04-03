@@ -51,8 +51,14 @@ export const portfolioProjects = [
     title: "Modern Interior Renovation",
     category: "Renovation",
     description:
-      "Premium interior upgrade with clean finishes and modern design details.",
-  },
+        "Premium interior upgrade with clean finishes and modern design details.",
+    images: [
+        "/images/projects/modern-renovation-1.jpg",
+        "/images/projects/modern-renovation-2.jpg",
+        "/images/projects/modern-renovation-3.jpg",
+        "/images/projects/modern-renovation-4.jpg",
+    ],
+},
   {
     title: "Single Family Fix & Flip",
     category: "Investment Project",
