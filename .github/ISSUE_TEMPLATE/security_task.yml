@@ -1,0 +1,102 @@
+name: Security Task
+description: Track security hardening, vulnerability remediation, or access-control work.
+title: "[Security]: "
+labels:
+  - "type: security"
+  - "risk: security"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, passwords, private keys, customer data, or exploit details that should not be public. For sensitive vulnerabilities, follow `SECURITY.md` instead of opening a public issue.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the security task without exposing sensitive details.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Auth
+        - Backend
+        - Frontend
+        - Infrastructure
+        - GitHub / CI
+        - Secrets / Configuration
+        - Data Access
+        - Monitoring / Alerts
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+        - Informational
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Immediate production risk
+        - P1 - High priority hardening
+        - P2 - Planned security improvement
+        - P3 - Low priority
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk
+      description: What could happen if this is not addressed?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_work
+    attributes:
+      label: Proposed Work
+      description: Describe the intended remediation or analysis.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - [ ] Risk is remediated or documented.
+        - [ ] Required checks pass.
+        - [ ] Production behavior is preserved unless explicitly approved.
+        - [ ] No secrets are committed.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation Plan
+      description: How will we confirm the security work is effective?
+    validations:
+      required: true
+  - type: textarea
+    id: deployment
+    attributes:
+      label: Deployment Impact
+      description: Identify whether this affects frontend, backend, infrastructure, security infrastructure, or no deployment. Note whether protected environment approval is needed.
+      placeholder: "Deployment impact: none / frontend / backend / infrastructure / security infrastructure / multiple"
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link prerequisite issues or decisions.

@@ -1,0 +1,22 @@
+# Hoten Group MVP ownership routing.
+# Keep this aligned with GitHub branch protection and required review policy.
+
+# GitHub deployment workflows
+.github/workflows/** @Tunde-cs
+
+# Frontend application
+app/** @Tunde-cs
+components/** @Tunde-cs
+lib/** @Tunde-cs
+data/** @Tunde-cs
+
+# Backend API
+backend/** @Tunde-cs
+
+# AWS CDK infrastructure
+infra/** @Tunde-cs
+
+# Project documentation and contributor process
+CONTRIBUTING.md @Tunde-cs
+SECURITY.md @Tunde-cs
+README.md @Tunde-cs

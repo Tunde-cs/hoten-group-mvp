@@ -1,0 +1,109 @@
+name: Bug Report
+description: Report a defect in existing Hoten Group MVP behavior.
+title: "[Bug]: "
+labels:
+  - "type: bug"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for defects in existing behavior. Production changes must go through a pull request into protected `main`, pass required checks, and receive approval before merge.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken?
+      placeholder: Describe the issue clearly.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Frontend
+        - Backend
+        - Dashboard
+        - Auth
+        - Infrastructure
+        - Deployment
+        - GitHub / Workflow
+        - Documentation
+        - Unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Production outage or data exposure
+        - P1 - Major user or operator impact
+        - P2 - Normal defect
+        - P3 - Low impact
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Production Risk
+      options:
+        - Low
+        - Medium
+        - High
+        - Security-sensitive
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: Current Behavior
+      description: What happens now?
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps To Reproduce
+      description: Include URLs, commands, inputs, or screenshots where useful.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See ...
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this issue to be done?
+      placeholder: |
+        - [ ] Defect is fixed.
+        - [ ] Existing production behavior outside the bug is preserved.
+        - [ ] Required checks pass.
+    validations:
+      required: true
+  - type: textarea
+    id: deployment
+    attributes:
+      label: Deployment Impact
+      description: Note whether this affects frontend, backend, infrastructure, security infrastructure, or no deployment.
+      placeholder: "Deployment impact: none / frontend / backend / infrastructure / security infrastructure / multiple"
+    validations:
+      required: true
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback Notes
+      description: If this change reaches production, how should it be rolled back?
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add logs, screenshots, related issues, or implementation notes.
