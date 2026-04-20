@@ -1,0 +1,120 @@
+name: Infrastructure Task
+description: Track AWS CDK, deployment role, DNS, WAF, or infrastructure work.
+title: "[Infra]: "
+labels:
+  - "type: infra"
+  - "area: infra"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Infrastructure changes can affect production. Preserve current production behavior unless the issue explicitly approves a behavior change. Production changes must go through a pull request into protected `main`, pass required checks, and receive approval before merge.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What infrastructure work is needed?
+    validations:
+      required: true
+  - type: dropdown
+    id: infra_area
+    attributes:
+      label: Area
+      options:
+        - BackendStack
+        - FrontendStack
+        - SecurityStack
+        - GitHub OIDC / IAM
+        - GitHub Actions workflow
+        - DNS / CloudFront / S3
+        - App Runner / ECR
+        - RDS / Database
+        - WAF / Monitoring / Alerts
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Urgent production risk
+        - P1 - Important operational work
+        - P2 - Planned improvement
+        - P3 - Low priority
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Production Risk
+      options:
+        - Low
+        - Medium
+        - High
+        - Security-sensitive
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: deployment_impact
+    attributes:
+      label: Deployment Impact
+      description: Note whether this affects frontend, backend, infrastructure, security infrastructure, or no deployment.
+      placeholder: "Deployment impact: none / frontend / backend / infrastructure / security infrastructure / multiple"
+    validations:
+      required: true
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Affected Environments
+      options:
+        - label: Local only
+        - label: Pull request validation only
+        - label: Production frontend
+        - label: Production backend
+        - label: Production frontend infrastructure
+        - label: Production security infrastructure
+  - type: textarea
+    id: current_state
+    attributes:
+      label: Current State
+      description: What exists today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_change
+    attributes:
+      label: Proposed Change
+      description: What should change?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - [ ] CDK/app validation passes.
+        - [ ] No unintended production behavior changes are introduced.
+        - [ ] Deployment impact and rollback are documented.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation Plan
+      description: List local commands, CI checks, synth output, or AWS verification steps.
+    validations:
+      required: true
+  - type: textarea
+    id: approval
+    attributes:
+      label: Approval / Deployment Notes
+      description: Note whether protected environment approval is required.
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback Plan
+      description: How should this infrastructure change be reversed if needed?
+    validations:
+      required: true

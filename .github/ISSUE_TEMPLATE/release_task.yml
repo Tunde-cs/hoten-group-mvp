@@ -1,0 +1,112 @@
+name: Release Task
+description: Plan, approve, or verify a production release or deployment-control change.
+title: "[Release]: "
+labels:
+  - "type: release"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Production deployment occurs after merge to `main`. Protected environments may require manual approval before deployment proceeds.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What release, approval, rollback, or deployment-control task is needed?
+    validations:
+      required: true
+  - type: dropdown
+    id: release_type
+    attributes:
+      label: Area
+      options:
+        - Frontend production release
+        - Backend production release
+        - Frontend infrastructure release
+        - Security infrastructure release
+        - Release process / governance
+        - Rollback / recovery
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this release task to be complete?
+      placeholder: |
+        - [ ] Required PR checks pass.
+        - [ ] Required approval is received.
+        - [ ] Deployment or release process change is verified.
+    validations:
+      required: true
+  - type: textarea
+    id: deployment_impact
+    attributes:
+      label: Deployment Impact
+      description: Note whether this affects frontend, backend, infrastructure, security infrastructure, or no deployment.
+      placeholder: "Deployment impact: none / frontend / backend / infrastructure / security infrastructure / multiple"
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Urgent production release or rollback
+        - P1 - Required for next release
+        - P2 - Planned release process work
+        - P3 - Low priority
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Production Risk
+      options:
+        - Low
+        - Medium
+        - High
+        - Security-sensitive
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Which changes, issues, workflows, or environments are included?
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Required Checks / Evidence
+      description: What must be passing or verified before this is complete?
+      placeholder: |
+        - [ ] Required PR checks pass.
+        - [ ] Approval received.
+        - [ ] Deployment verified.
+    validations:
+      required: true
+  - type: textarea
+    id: approval
+    attributes:
+      label: Approval Requirements
+      description: Note required reviewers or protected environment approvals.
+    validations:
+      required: true
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback Plan
+      description: How should this release be rolled back?
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Post-Release Verification
+      description: How will the release be verified after deployment?
+    validations:
+      required: true

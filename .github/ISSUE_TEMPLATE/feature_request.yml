@@ -1,0 +1,102 @@
+name: Feature Request
+description: Propose a scoped enhancement to the existing MVP.
+title: "[Feature]: "
+labels:
+  - "type: feature"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for scoped enhancements. Avoid repo rewrites. Production changes must go through a pull request into protected `main`, pass required checks, and receive approval before merge.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What should be added or improved?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Frontend
+        - Backend
+        - Dashboard
+        - Auth
+        - Infrastructure
+        - Deployment
+        - GitHub / Workflow
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - Urgent production need
+        - P1 - Important near-term work
+        - P2 - Planned enhancement
+        - P3 - Nice to have
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Production Risk
+      options:
+        - Low
+        - Medium
+        - High
+        - Security-sensitive
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Opportunity
+      description: What user, business, or operator problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Scope
+      description: Describe the smallest useful version of the change.
+    validations:
+      required: true
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out Of Scope
+      description: What should this issue explicitly not include?
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - [ ] The feature is implemented within the agreed scope.
+        - [ ] Existing production behavior is preserved.
+        - [ ] Required checks pass.
+    validations:
+      required: true
+  - type: textarea
+    id: deployment
+    attributes:
+      label: Deployment Impact
+      placeholder: "Deployment impact: none / frontend / backend / infrastructure / security infrastructure / multiple"
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link prerequisite issues, decisions, designs, or external dependencies.
+  - type: textarea
+    id: rollout
+    attributes:
+      label: Rollout / Rollback Notes
+      description: Describe phased rollout needs and how to reverse the change if needed.
