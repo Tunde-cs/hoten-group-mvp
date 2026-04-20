@@ -18,6 +18,7 @@ permissions:
 jobs:
   deploy-security-infra:
     runs-on: ubuntu-latest
+    environment: production-security-infra
 
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
