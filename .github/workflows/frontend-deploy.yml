@@ -24,6 +24,7 @@ permissions:
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
+    environment: production-frontend
 
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
