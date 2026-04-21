@@ -25,6 +25,14 @@ export class SecurityStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: SecurityStackProps) {
     super(scope, id, props);
 
+    const githubTrustedSubjects = [
+      `repo:${props.githubOrg}/${props.githubRepo}:ref:refs/heads/main`,
+      `repo:${props.githubOrg}/${props.githubRepo}:environment:production-frontend`,
+      `repo:${props.githubOrg}/${props.githubRepo}:environment:production-backend`,
+      `repo:${props.githubOrg}/${props.githubRepo}:environment:production-frontend-infra`,
+      `repo:${props.githubOrg}/${props.githubRepo}:environment:production-security-infra`,
+    ];
+
     const githubOidcProvider = iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
       this,
       'GitHubOidcProvider',
@@ -38,7 +46,7 @@ export class SecurityStack extends cdk.Stack {
           'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
         },
         StringLike: {
-          'token.actions.githubusercontent.com:sub': `repo:${props.githubOrg}/${props.githubRepo}:ref:refs/heads/main`,
+          'token.actions.githubusercontent.com:sub': githubTrustedSubjects,
         },
       }
     );
