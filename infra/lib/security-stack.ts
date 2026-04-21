@@ -298,6 +298,42 @@ export class SecurityStack extends cdk.Stack {
       })
     );
 
+    const securityInfraRole = new iam.Role(this, 'GitHubActionsHotenSecurityInfraRole', {
+      roleName: 'GitHubActionsHotenSecurityInfraRole',
+      assumedBy: githubPrincipal,
+      description: 'OIDC role for GitHub Actions security infrastructure deploys',
+    });
+
+    securityInfraRole.addToPolicy(
+      new iam.PolicyStatement({
+        sid: 'SecurityInfraDeployServices',
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'cloudformation:*',
+          'iam:GetRole',
+          'iam:CreateRole',
+          'iam:DeleteRole',
+          'iam:UpdateRole',
+          'iam:AttachRolePolicy',
+          'iam:DetachRolePolicy',
+          'iam:PutRolePolicy',
+          'iam:DeleteRolePolicy',
+          'iam:TagRole',
+          'iam:UntagRole',
+          'iam:PassRole',
+          'iam:CreateServiceLinkedRole',
+          'logs:*',
+          'cloudwatch:*',
+          'wafv2:*',
+          'sns:*',
+          'ssm:GetParameter',
+          'ssm:GetParameters',
+          'ssm:GetParametersByPath',
+        ],
+        resources: ['*'],
+      })
+    );
+
     new cdk.CfnOutput(this, 'FrontendWafLogGroupName', {
       value: frontendWafLogGroup.logGroupName,
     });
@@ -320,6 +356,10 @@ export class SecurityStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'FrontendInfraRoleArn', {
       value: frontendInfraRole.roleArn,
+    });
+
+    new cdk.CfnOutput(this, 'SecurityInfraRoleArn', {
+      value: securityInfraRole.roleArn,
     });
   }
 }
