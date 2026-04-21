@@ -52,4 +52,4 @@ jobs:
 
       - name: Deploy SecurityStack
         working-directory: infra
-        run: npx cdk deploy SecurityStack --require-approval never
+        run: npx cdk deploy SecurityStack --require-approval never --exclusively
