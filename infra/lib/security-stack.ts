@@ -334,6 +334,37 @@ export class SecurityStack extends cdk.Stack {
       })
     );
 
+    securityInfraRole.addToPolicy(
+      new iam.PolicyStatement({
+        sid: 'CdkBootstrapBucketAccess',
+        effect: iam.Effect.ALLOW,
+        actions: [
+          's3:ListBucket',
+          's3:GetBucketLocation',
+          's3:ListBucketMultipartUploads',
+        ],
+        resources: [
+          'arn:aws:s3:::cdk-hnb659fds-assets-629965575535-us-east-1',
+        ],
+      })
+    );
+
+    securityInfraRole.addToPolicy(
+      new iam.PolicyStatement({
+        sid: 'CdkBootstrapObjectsAccess',
+        effect: iam.Effect.ALLOW,
+        actions: [
+          's3:GetObject',
+          's3:PutObject',
+          's3:DeleteObject',
+          's3:AbortMultipartUpload',
+        ],
+        resources: [
+          'arn:aws:s3:::cdk-hnb659fds-assets-629965575535-us-east-1/*',
+        ],
+      })
+    );
+
     new cdk.CfnOutput(this, 'FrontendWafLogGroupName', {
       value: frontendWafLogGroup.logGroupName,
     });
